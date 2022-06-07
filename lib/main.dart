@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toko_furniture_online/screen/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -106,8 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () => {
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()))
+        },
+        tooltip: 'Home Screen',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
