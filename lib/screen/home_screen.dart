@@ -76,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: Alignment.topLeft,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                const Padding(
+                  padding: EdgeInsets.only(top: 20),
                   child: Text(
                     "Produk Tersedia",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(50),
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
-                    scrollDirection: Axis.vertical,
+                    scrollDirection: Axis.horizontal,
                     children: <Widget>[
                       _customWidgetGridView(context, 'Furniture 1', '900.000'),
                       _customWidgetGridView(context, 'Furniture 2', '800.000'),
