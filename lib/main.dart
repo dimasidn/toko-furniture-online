@@ -6,21 +6,14 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
-  // Untuk scroll web agar bisa berfungsi secara horizontal
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scrollBehavior: MyCustomScrollBehavior(),
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+          overscroll: false,
+          dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse}),
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
