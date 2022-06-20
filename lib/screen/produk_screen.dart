@@ -84,150 +84,144 @@ class _ProdukScreenState extends State<ProdukScreen>
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (notification) {
-              notification.disallowIndicator();
-              return true;
-            },
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              controller: _tes,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: screen.width,
-                    width: screen.width,
-                    child: PageView.builder(
-                        itemCount: images!.length,
-                        pageSnapping: true,
-                        controller: _pageController,
-                        onPageChanged: (page) {
-                          setState(() {
-                            activePage = page;
-                          });
-                        },
-                        itemBuilder: (context, pagePosition) {
-                          return Image.network(
-                            images![pagePosition],
-                            fit: BoxFit.fitWidth,
-                          );
-                        }),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      color: Colors.grey[200],
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: indicators(images!.length, activePage)),
-                    ),
-                  ),
-                  Container(
-                    width: screen.width,
-                    padding: const EdgeInsets.all(10),
-                    decoration: const BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                width: 0.6, style: BorderStyle.solid))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Meja Laptop - Meja Kopi Kayu - Meja Belajar Anak',
-                            style: TextStyle(fontSize: 20)),
-                        SizedBox(height: 8),
-                        Text('Rp 59.900', style: TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: screen.width,
-                    padding: const EdgeInsets.all(20),
-                    decoration: const BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                width: 0.6, style: BorderStyle.solid))),
-                    child: Row(
-                      //mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(images![1]),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Toko Primasakti',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text('Bandung, Jawa Barat')
-                          ],
-                        ),
-                        Flexible(child: Container()),
-                        Icon(
-                          Icons.chat,
-                          color: Colors.brown[200],
-                          size: 32,
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: screen.width,
-                    //height: screen.width,
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        border: const Border(
-                            bottom: BorderSide(
-                                width: 0.6, style: BorderStyle.solid))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Detail Produk',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Divider(height: 10, color: Colors.brown[200]),
-                        Text('Stok : 5'),
-                        Divider(height: 10, color: Colors.brown[200]),
-                        Text(
-                            'datadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadata')
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: screen.width,
-                    height: 200,
-                    padding: const EdgeInsets.all(10),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            controller: _tes,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: screen.width,
+                  width: screen.width,
+                  child: PageView.builder(
+                      itemCount: images!.length,
+                      pageSnapping: true,
+                      controller: _pageController,
+                      onPageChanged: (page) {
+                        setState(() {
+                          activePage = page;
+                        });
+                      },
+                      itemBuilder: (context, pagePosition) {
+                        return Image.network(
+                          images![pagePosition],
+                          fit: BoxFit.fitWidth,
+                        );
+                      }),
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Container(
                     color: Colors.grey[200],
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Ulasan',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                        Divider(height: 10, color: Colors.brown[200]),
-                        Flexible(
-                            child: Container(
-                          alignment: Alignment.center,
-                          child: Text('<Belum ada ulasan.>'),
-                        ))
-                      ],
-                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: indicators(images!.length, activePage)),
                   ),
-                  const SizedBox(
-                    height: 50,
-                  )
-                ],
-              ),
+                ),
+                Container(
+                  width: screen.width,
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              width: 0.6, style: BorderStyle.solid))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Meja Laptop - Meja Kopi Kayu - Meja Belajar Anak',
+                          style: TextStyle(fontSize: 20)),
+                      SizedBox(height: 8),
+                      Text('Rp 59.900', style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: screen.width,
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                              width: 0.6, style: BorderStyle.solid))),
+                  child: Row(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(images![1]),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Toko Primasakti',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text('Bandung, Jawa Barat')
+                        ],
+                      ),
+                      Flexible(child: Container()),
+                      Icon(
+                        Icons.chat,
+                        color: Colors.brown[200],
+                        size: 32,
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  width: screen.width,
+                  //height: screen.width,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      border: const Border(
+                          bottom: BorderSide(
+                              width: 0.6, style: BorderStyle.solid))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Detail Produk',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Divider(height: 10, color: Colors.brown[200]),
+                      Text('Stok : 5'),
+                      Divider(height: 10, color: Colors.brown[200]),
+                      Text(
+                          'datadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadatadata')
+                    ],
+                  ),
+                ),
+                Container(
+                  width: screen.width,
+                  height: 200,
+                  padding: const EdgeInsets.all(10),
+                  color: Colors.grey[200],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Ulasan',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Divider(height: 10, color: Colors.brown[200]),
+                      Flexible(
+                          child: Container(
+                        alignment: Alignment.center,
+                        child: Text('<Belum ada ulasan.>'),
+                      ))
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
             ),
           ),
           Align(
