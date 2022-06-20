@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:toko_furniture_online/screen/signup_screen.dart';
 
@@ -12,6 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+          overscroll: false,
+          dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse}),
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
