@@ -18,8 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Text(
-          "tes"), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
+      home: const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: Text('Flutter')),
+      ), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
     );
   }
 }
