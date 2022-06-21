@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home:
-          const MyDashboard(), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
+          const HomeScreen(), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
     );
   }
 }
