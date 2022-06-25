@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -8,69 +10,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List? data;
+  final idrFormat =
+      NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
   List<IconData?>? _navbarIcons, _menuAppIcons;
-
-  List<Widget> menuApp(menuLength, currentIndex) {
-    return List<Widget>.generate(menuLength, (index) {
-      return SizedBox(
-          width: 60,
-          height: double.infinity,
-          child: Center(
-              child: Icon(_menuAppIcons![index],
-                  size: 36,
-                  color:
-                      index % 2 == 0 ? Colors.pinkAccent : Colors.brown[300])));
-    });
-  }
-
-  Widget flashSaleProduct(String namaProduk, String hargaOld, String hargaNew) {
-    return Card(
-      margin: const EdgeInsets.only(right: 14, bottom: 4),
-      color: Colors.white,
-      elevation: 4,
-      child: SizedBox(
-        height: 220,
-        width: 150,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(4)),
-                  color: Colors.grey[300]),
-              child: const Icon(Icons.image_not_supported_outlined,
-                  size: 40, color: Colors.pinkAccent),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(7.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(namaProduk, style: const TextStyle(fontSize: 11)),
-                  Text('Rp $hargaNew',
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.bold)),
-                  Text('Rp $hargaOld',
-                      style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.pinkAccent,
-                          decoration: TextDecoration.lineThrough)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
     super.initState();
+    data = [
+      ['MEJAMEJAMEJA MEJAMEJA sfsf sf sfsffs', 5225000, 4444000],
+      ['KURSIKURSIKU RSIKURSI ss s ffs fsf sf', 2740000, 1820000],
+      ['SOFASOFASOFA SOFASOFA sf sf sf fss s', 6810000, 5810000],
+      ['LEMARILEMARI LEMARILE sff sf sfsf', 9125000, 8250000],
+      ['POTBUNGA POTBUNGA POT sf sfsf fssf s', 940000, 800000],
+      ['KARPET KULIT HARYMAU sf ssff  sfff', 99880000, 89990000]
+    ];
     _navbarIcons = [
       Icons.home,
       Icons.favorite_border,
@@ -92,6 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
       Icons.king_bed_rounded,
       Icons.kitchen
     ];
+  }
+
+  @override
+  void dispose() {
+    data = [];
+    _menuAppIcons = [];
+    super.dispose();
   }
 
   @override
@@ -215,10 +177,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 Container(
-                  height: 60,
+                  height: 80,
                   width: sizescreen.width,
-                  padding: const EdgeInsets.only(
-                      top: 10, bottom: 14, left: 14, right: 14),
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border(
@@ -226,16 +186,26 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.brown.shade200,
                               width: 0.6,
                               style: BorderStyle.solid))),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: menuApp(_menuAppIcons!.length, 0),
-                    ),
-                  ),
+                  child: ListView.builder(
+                      padding: const EdgeInsets.all(20),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _menuAppIcons!.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: EdgeInsets.only(
+                              right:
+                                  _menuAppIcons!.length != index + 1 ? 20 : 0),
+                          child: Icon(_menuAppIcons![index],
+                              size: 36,
+                              color: index % 2 == 0
+                                  ? Colors.pinkAccent
+                                  : Colors.brown[300]),
+                        );
+                      }),
                 ),
                 Container(
                   color: Colors.grey[100],
-                  height: 270,
+                  height: 340,
                   width: sizescreen.width,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,26 +216,72 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 14),
-                          child: Row(
-                            children: [
-                              flashSaleProduct('MEJAMEJAMEJA MEJAMEJA',
-                                  '5.225.000', '4.444.000'),
-                              flashSaleProduct('KURSIKURSIKU RSIKURSI',
-                                  '2.740.000', '1.820.000'),
-                              flashSaleProduct('SOFASOFASOFA SOFASOFA',
-                                  '6.810.000', '5.810.000'),
-                              flashSaleProduct('LEMARILEMARI LEMARILE',
-                                  '9.125.000', '8.250.000'),
-                              flashSaleProduct('POTBUNGA POTBUNGA POT',
-                                  '940.000', '800.000'),
-                              flashSaleProduct('KARPET KULIT HARYMAU',
-                                  '99.880.000', '89.990.000'),
-                            ],
-                          ),
+                      Flexible(
+                        child: ListView.builder(
+                          shrinkWrap: false,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.all(14),
+                          itemCount: data?.length,
+                          itemBuilder: (context, index) {
+                            return Card(
+                              elevation: 3,
+                              margin: const EdgeInsets.only(right: 14),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: SizedBox(
+                                width: 150,
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(15)),
+                                        child: Container(
+                                            height: 180,
+                                            color: Colors.pinkAccent,
+                                            child: Center(
+                                                child: Text(
+                                                    "Gambar ke-${index + 1}")))),
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(data?[index][0],
+                                                maxLines: 2,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                            Text(
+                                                idrFormat
+                                                    .format(data?[index][2]),
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                idrFormat
+                                                    .format(data?[index][1]),
+                                                style: const TextStyle(
+                                                    color: Colors.pinkAccent,
+                                                    fontWeight: FontWeight.w500,
+                                                    decoration: TextDecoration
+                                                        .lineThrough)),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       )
                     ],
