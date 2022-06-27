@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:toko_furniture_online/screen/login_screen.dart';
+import 'package:toko_furniture_online/screen/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
