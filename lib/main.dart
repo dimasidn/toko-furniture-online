@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:toko_furniture_online/screen/pencarian_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,10 +19,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(child: Text('Flutter')),
-      ), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
+      home:
+          const PencarianScreen(), //Ketik nama class dari screen lain di sini [ home: namaclass(), ]
     );
   }
 }
