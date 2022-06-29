@@ -1,236 +1,164 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-//void main() => runApp(MyApp());
-
-class ProfileScreen extends StatelessWidget {
-  List<String> tags = ['Sofa','Lemari','Meja Makan','Pintu','Rak Dinding','Meja Belajar','Rak Buku',];
-
+class ProfilScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Profile'),
-          backgroundColor: Color(0xff020d1c),
-          elevation: 0,
-          actions: <Widget>[
-            Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: Icon(
-                  Icons.verified_user,
-                  color: Colors.red
-                )
+    return SafeArea(
+        child: Scaffold(
+      body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [Colors.pink, Colors.brown])),
+          child: Stack(children: <Widget>[
+            Positioned.fill(
+              top: 150,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xfff7f7f7),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
               ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage('images/image1.png'),
+            ),
+            Positioned.fill(
+              child: Column(
+                children: [
+                  SizedBox(height: 30),
+                  Text(
+                    "Profil",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: .5,
+                      ),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(70),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: AssetImage('images/image1.png'),
+                        ),
+                      ),
                     ),
                   ),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 25.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('Uvi Firgianingsih',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black)),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.location_on,
-                                  color: Colors.black,
-                                  size: 17,
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.only(left: 4.0),
-                                    child: Text(
-                                      'Boyolali, Jawa Tengah ',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          letterSpacing: 3,
-                                          wordSpacing: 2),
-                                    )
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        )
+                  Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    color: Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.person_outline,
+                      ),
+                      title: Text(
+                        'Nama user',
+                        style: TextStyle(fontSize: 15),
+                      ),
                     ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    color: Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.mail_outlined,
+                      ),
+                      title: Text(
+                        'email user',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    color: Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.phone_outlined,
+                      ),
+                      title: Text(
+                        'Telepon user',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                    color: Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.location_pin,
+                      ),
+                      title: Text(
+                        'Alamat',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              //bagian sosial media
-              Padding(
-                padding: const EdgeInsets.only(left: 30, top: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(children: <Widget>[
-                      Text(
-                        '250k',
-                        style: TextStyle(fontSize: 20, color: Colors.blueAccent),
-                      ),
-                      Text('Pengikut',
-                          style: TextStyle(fontSize: 18, color: Colors.black))
-                    ]),
-                    Column(children: <Widget>[
-                      Text(
-                        '10k',
-                        style: TextStyle(fontSize: 20, color: Colors.blueAccent),
-                      ),
-                      Text('Mengikuti',
-                          style: TextStyle(fontSize: 18, color: Colors.black))
-                    ]),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 32.0),
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 16, top: 8, bottom: 8),
-                          child: Text(
-                            'Follow',
-                            style: TextStyle(fontSize: 14, color: Colors.black),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(32),
-                            gradient: LinearGradient(
-                                colors: [Colors.blueAccent, Colors.black54],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              //bagian tags
-              Container(
-                margin: EdgeInsets.only(top: 25),
-                height: 45,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: tags.length,
-                    itemBuilder: (BuildContext contect, int index) {
-                      return Container(
-                        margin: EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(
-                                colors: [Colors.purple, Colors.blueAccent],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight)
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            tags[index],
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      );
-                    }
-                  ),
-              ),
-              //bagian autobiography
-              Container(
-                padding: EdgeInsets.fromLTRB(5.0, 50.0, 5.0, 4.0),
-                margin: EdgeInsets.fromLTRB(5.0, 2.0, 5.0, 4.0),
-                height: 500,
-                width: double.infinity,
-                child: Card(
-                  child: Container(
-                      color: Colors.blueAccent[200],
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          //Padding(padding: EdgeInsets.only(top: 30, right: 20, left: 70, bottom:  15),
-                    //child: Text ('Biodata Mahasiswa', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24,color: Colors.black)),
-                    //),
-                          Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.person_pin),
-                      Text( 'Nama       : Uvi Firgianingsih', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
-                          )
-                        ]
-                      ),
-                        ),
-                          Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.dialpad),
-                     Text('Username          : uvifirgia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
-                            )
-                          ]
-                          ),
-                        ),
-                      Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.date_range),
-                     Text('Tanggal Lahir      : 09-04-2001', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
-                            )
-                          ]
-                        ),
-                      ),
-                      Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.contact_mail),
-                      Text('E-mail      : uvifirgia04@gmail.com', style: TextStyle(fontWeight: FontWeight.bold, fontSize:18)
-                           )
-                         ]
-                        ),
-                      ),
-                      Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.contact_phone),
-                      Text('Handphone   : 085783241470', style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 18)
-                            )
-                          ]
-                        ),
-                      ),
-                      Padding(
-                      padding:const EdgeInsets.all(15.0),
-                      child:Row( 
-                      children: <Widget>[
-                        Icon(Icons.home),
-                      Text('Alamat    : Wonosegoro, Boyolali', style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 18)
-                            )
-                           ]
-                         ),
-                        ),
-                      ],
-                    )
-                  ),
-                ),
-              )
-            ],
+            )
+          ])),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, -15),
+              blurRadius: 20,
+              color: Color.fromARGB(255, 214, 211, 211).withOpacity(0.15),
+            ),
+          ],
         ),
-    );
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: Icon(Icons.home,
+                  color: Color.fromRGBO(158, 158, 158, 1), size: 35),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.smart_button, color: Colors.grey, size: 35),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.smart_display, color: Colors.grey, size: 35),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.person, color: Colors.grey, size: 35),
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }
