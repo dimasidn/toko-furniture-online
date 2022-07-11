@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import '../conf/firestore.dart';
 
 class PencarianScreen extends StatefulWidget {
   const PencarianScreen({Key? key}) : super(key: key);
@@ -14,18 +14,19 @@ class PencarianScreen extends StatefulWidget {
 class _PencarianScreenState extends State<PencarianScreen> {
   final FocusNode _focus = FocusNode();
   List? _data, _datasearch;
-  bool isSearch = false;
+  Map<String, dynamic>? _tokoData, _productData;
+  bool isSearch = false, _showData = false;
   late ScrollController _scrollPoint;
   final idrFormat =
       NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
 
-  Future<void> readJson() async {
+  Future<void> _readJson() async {
     final String respone = await rootBundle.loadString('assets/dummy.json');
     final data = await jsonDecode(respone);
     _data = data;
   }
 
-  Future<void> cariBarang(String string) async {
+  Future<void> _cariBarang(String string) async {
     if (_datasearch != null) {
       _datasearch!.clear();
     }
@@ -40,19 +41,41 @@ class _PencarianScreenState extends State<PencarianScreen> {
     }
   }
 
+  Future<void> _cariProduk(String string) async {
+    if (_datasearch != null) _datasearch!.clear();
+    _datasearch = [];
+    for (var i = 0; i < _productData!['data']!.length; i++) {
+      String nama = _productData!['data']![i]['nama'];
+      String ktgr = _productData!['data']![i]['kategori'];
+      if (nama.toUpperCase().contains(string.toUpperCase()) == true ||
+          ktgr.toUpperCase().contains(string.toUpperCase()) == true) {
+        _datasearch!.add(_productData!['data']![i]);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _focus.addListener(() => setState(() {}));
     _scrollPoint = ScrollController();
+    _focus.addListener(() => setState(() {}));
+    Future.delayed(Duration.zero, () async {
+      _tokoData = await Firestore.getData('database', 'toko');
+      _productData = await Firestore.getData('database', 'products');
+      setState(() {
+        _showData = true;
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _focus.removeListener(() {});
     _focus.dispose();
-    _data!.clear();
+    //if (_data != null) _data!.clear();
+    if (_tokoData != null) _tokoData!.clear();
+    if (_productData != null) _productData!.clear();
+    _scrollPoint.dispose();
   }
 
   @override
@@ -66,9 +89,12 @@ class _PencarianScreenState extends State<PencarianScreen> {
           SizedBox(height: MediaQuery.of(context).viewPadding.top),
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 14),
-                child: Icon(color: Colors.brown[200], Icons.arrow_back),
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 14),
+                  child: Icon(color: Colors.brown[200], Icons.arrow_back),
+                ),
               ),
               Flexible(
                 child: Container(
@@ -90,12 +116,9 @@ class _PencarianScreenState extends State<PencarianScreen> {
                     textInputAction: TextInputAction.search,
                     enableSuggestions: false,
                     style: const TextStyle(color: Colors.pinkAccent),
-                    onSubmitted: (value) async {
-                      if (_data == null) {
-                        await readJson();
-                      }
+                    onSubmitted: (text) async {
+                      await _cariProduk(text);
                       setState(() {
-                        cariBarang(value);
                         isSearch = true;
                         if (_scrollPoint.hasClients) {
                           _scrollPoint.animateTo(
@@ -116,7 +139,7 @@ class _PencarianScreenState extends State<PencarianScreen> {
                         isDense: true,
                         hoverColor: Colors.white,
                         border: InputBorder.none),
-                    autofocus: true,
+                    enabled: _showData == true ? true : false,
                   ),
                 ),
               ),
@@ -130,7 +153,7 @@ class _PencarianScreenState extends State<PencarianScreen> {
           Expanded(
               child: GestureDetector(
                   onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-                  child: isSearch
+                  child: isSearch == true
                       ? GridView.builder(
                           shrinkWrap: false,
                           physics: const BouncingScrollPhysics(),
@@ -141,7 +164,7 @@ class _PencarianScreenState extends State<PencarianScreen> {
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 14,
                                   mainAxisSpacing: 18,
-                                  mainAxisExtent: 320),
+                                  mainAxisExtent: 332),
                           itemCount:
                               _datasearch != null ? _datasearch!.length : 0,
                           itemBuilder: (context, index) {
@@ -149,50 +172,73 @@ class _PencarianScreenState extends State<PencarianScreen> {
                               elevation: 1,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)),
-                              child: Column(
-                                children: [
-                                  ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                          top: Radius.circular(15)),
-                                      child: Container(
-                                          height: 180,
-                                          color: Colors.pinkAccent,
-                                          child: Image.network(
-                                              _datasearch![index]["gambar"][0],
-                                              fit: BoxFit.fitHeight))),
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 14, vertical: 10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(_datasearch![index]['nama'],
-                                              maxLines: 2,
-                                              softWrap: true,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w500)),
-                                          Text(
-                                              idrFormat.format(
-                                                  _datasearch![index]['harga']),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          Text(
-                                              "Rating : ${_datasearch![index]['rating']}",
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.pinkAccent)),
-                                          Text(
-                                              "ID_Toko : ${(_datasearch![index]['id_toko']).toString()}"),
-                                        ],
+                              child: GestureDetector(
+                                onTap: () => Navigator.pushNamed(
+                                    context, "/produk",
+                                    arguments: {"produk": _datasearch![index]}),
+                                child: Column(
+                                  children: [
+                                    ClipRRect(
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(15)),
+                                        child: Container(
+                                            height: 180,
+                                            color: Colors.grey[200],
+                                            child: FadeInImage(
+                                                image: NetworkImage(
+                                                    _datasearch![index]
+                                                        ["gambar"][0]),
+                                                fit: BoxFit.cover,
+                                                placeholder: const AssetImage(
+                                                    "assets/loading_animate_eclipse.gif"),
+                                                placeholderFit: BoxFit.cover,
+                                                imageErrorBuilder: (context,
+                                                    exception, stackTrace) {
+                                                  return const Text(
+                                                      "Cannot load image");
+                                                }))),
+                                    Flexible(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(_datasearch![index]['nama'],
+                                                maxLines: 2,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                            Text(
+                                                idrFormat.format(
+                                                    _datasearch![index]
+                                                        ['harga']),
+                                                style: const TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                "Rating : ${_datasearch![index]['rating']}",
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.pinkAccent)),
+                                            Text(_tokoData!['data'][
+                                                _datasearch![index]['id_toko'] -
+                                                    1]['nama']),
+                                            Text(_tokoData!['data'][
+                                                _datasearch![index]['id_toko'] -
+                                                    1]['alamat'])
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                ],
+                                    )
+                                  ],
+                                ),
                               ),
                             );
                           })
@@ -200,7 +246,9 @@ class _PencarianScreenState extends State<PencarianScreen> {
                           color: Colors.white,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            'assets/logosearch.png',
+                            _showData == true
+                                ? 'assets/logosearch.png'
+                                : 'assets/loading_animate_eclipse.gif',
                             width: screen.width / 2.5,
                             fit: BoxFit.fitWidth,
                           ))))

@@ -20,6 +20,15 @@ class _KeranjangScreenState extends State<KeranjangScreen> {
 
   final idrFormat =
       NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
+      {required String message, required Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: Text(message),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +47,14 @@ class _KeranjangScreenState extends State<KeranjangScreen> {
                 SizedBox(height: MediaQuery.of(context).viewPadding.top),
                 Row(
                   children: [
-                    Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 40,
-                        height: 40,
-                        child: Icon(Icons.arrow_back, color: Colors.white)),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                          padding: const EdgeInsets.all(5),
+                          width: 40,
+                          height: 40,
+                          child: Icon(Icons.arrow_back, color: Colors.white)),
+                    ),
                     const Flexible(
                         child: Center(
                       child: Text(
@@ -53,11 +65,16 @@ class _KeranjangScreenState extends State<KeranjangScreen> {
                         ),
                       ),
                     )),
-                    Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 40,
-                        height: 40,
-                        child: Icon(Icons.share, color: Colors.white)),
+                    GestureDetector(
+                      onTap: () => _snackBarCustom(
+                          message: 'Fitur dalam pengembangan :)',
+                          color: Colors.orange),
+                      child: Container(
+                          padding: const EdgeInsets.all(5),
+                          width: 40,
+                          height: 40,
+                          child: Icon(Icons.share, color: Colors.white)),
+                    ),
                   ],
                 )
               ],
@@ -154,14 +171,17 @@ class _KeranjangScreenState extends State<KeranjangScreen> {
                                 fontSize: 20, fontWeight: FontWeight.bold)),
                       ],
                     )),
-                Container(
-                  color: Colors.brown[300],
-                  height: 50,
-                  child: Center(
-                      child: Text(
-                    'Checkout',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  )),
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, "/checkout"),
+                  child: Container(
+                    color: Colors.brown[300],
+                    height: 50,
+                    child: Center(
+                        child: Text(
+                      'Checkout',
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                    )),
+                  ),
                 )
               ],
             ),

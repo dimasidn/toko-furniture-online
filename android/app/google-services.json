@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "502964946851",
+    "project_id": "toko-furniture-online",
+    "storage_bucket": "toko-furniture-online.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502964946851:android:53fa62025e2b8acb777c16",
+        "android_client_info": {
+          "package_name": "com.example.toko_furniture_online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502964946851-6fvksu8evj57tmov05f2vh4irq9onmg2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSzA66Dp8zfT0nRIvVWDM7HWW_ZsfLp40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502964946851-6fvksu8evj57tmov05f2vh4irq9onmg2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

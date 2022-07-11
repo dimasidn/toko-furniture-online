@@ -9,9 +9,9 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String? _kurir, _metpem;
-  List _listKurir = ["JNE Cargo", "J&T Cargo", "SiCepat Cargo"];
+  final List _listKurir = ["JNE Cargo", "J&T Cargo", "SiCepat Cargo"];
   String _listHargaKurir(String? kurir) {
-    var aaa;
+    String aaa;
     if (kurir == "JNE Cargo") {
       aaa = "Rp 240.000";
     } else if (kurir == "J&T Cargo") {
@@ -22,6 +22,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       aaa = "";
     }
     return aaa;
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
+      {required String message, required Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: Text(message),
+    ));
   }
 
   Widget _containerCustom(double? height, Widget? child) {
@@ -56,11 +66,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 SizedBox(height: MediaQuery.of(context).viewPadding.top),
                 Row(
                   children: [
-                    Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 40,
-                        height: 40,
-                        child: Icon(Icons.arrow_back, color: Colors.white)),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                          padding: const EdgeInsets.all(5),
+                          width: 40,
+                          height: 40,
+                          child: Icon(Icons.arrow_back, color: Colors.white)),
+                    ),
                     const Flexible(
                         child: Center(
                       child: Text(
@@ -71,11 +84,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                     )),
-                    Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 40,
-                        height: 40,
-                        child: Icon(Icons.share, color: Colors.white)),
+                    GestureDetector(
+                      onTap: () => _snackBarCustom(
+                          message: 'Fitur dalam pengembangan :)',
+                          color: Colors.orange),
+                      child: Container(
+                          padding: const EdgeInsets.all(5),
+                          width: 40,
+                          height: 40,
+                          child: Icon(Icons.share, color: Colors.white)),
+                    ),
                   ],
                 )
               ],
@@ -88,7 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               scrollDirection: Axis.vertical,
               children: [
                 _containerCustom(
-                    110,
+                    120,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,14 +309,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ],
                     )),
-                Container(
-                  color: Colors.brown[300],
-                  height: 50,
-                  child: Center(
-                      child: Text(
-                    'BAYAR',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  )),
+                GestureDetector(
+                  onTap: () =>
+                      Navigator.pushReplacementNamed(context, "/transaksi"),
+                  child: Container(
+                    color: Colors.brown[300],
+                    height: 50,
+                    child: Center(
+                        child: Text(
+                      'BAYAR',
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                    )),
+                  ),
                 )
               ],
             ),

@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
+import '../conf/firestore.dart';
+import '../conf/navigatebar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,28 +13,100 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List? data;
+  User? _user;
+  Map<String, dynamic>? _userData, _tokoData, _productData;
+  bool _showData = false;
+  List<dynamic>? _produkCustomDashboard;
+  List<IconData?>? _menuAppIcons;
   final idrFormat =
       NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
-  List<IconData?>? _navbarIcons, _menuAppIcons;
+
+  int _randomDiscountSimulation(int harga) {
+    var newHarga = harga - (harga * ((Random().nextInt(51) + 5) / 100));
+    return int.parse(newHarga.toStringAsFixed(0));
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
+      {required String message, required Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: Text(message),
+    ));
+  }
+
+  Widget _customCardProduct(Map<String, dynamic>? data) {
+    return SizedBox(
+      height: 320,
+      child: Card(
+        elevation: 3,
+        color: Colors.grey[100],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: GestureDetector(
+          onTap: () => Navigator.pushNamed(context, "/produk",
+              arguments: {"produk": data}),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(15)),
+                  child: Container(
+                      color: Colors.white,
+                      height: 200,
+                      width: double.infinity,
+                      child: FadeInImage(
+                          image: NetworkImage(data!['gambar'][0]),
+                          fit: BoxFit.fitHeight,
+                          placeholder: const AssetImage(
+                              "assets/loading_animate_eclipse.gif"),
+                          placeholderFit: BoxFit.fitHeight,
+                          imageErrorBuilder: (context, exception, stackTrace) {
+                            return const Text("Cannot load image");
+                          }))),
+              Flexible(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(data['nama'],
+                          style: const TextStyle(fontSize: 18),
+                          maxLines: 1,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis),
+                      Text(idrFormat.format(data['harga']),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.pinkAccent)),
+                      Text(_tokoData!['data'][data['id_toko'] - 1]['nama']),
+                      Row(
+                        children: [
+                          Text("Rating : ${data['rating']}",
+                              style: const TextStyle(color: Colors.pinkAccent)),
+                          Text(
+                              " | ${_tokoData!['data'][data['id_toko'] - 1]['alamat']}"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    data = [
-      ['MEJAMEJAMEJA MEJAMEJA sfsf sf sfsffs', 5225000, 4444000],
-      ['KURSIKURSIKU RSIKURSI ss s ffs fsf sf', 2740000, 1820000],
-      ['SOFASOFASOFA SOFASOFA sf sf sf fss s', 6810000, 5810000],
-      ['LEMARILEMARI LEMARILE sff sf sfsf', 9125000, 8250000],
-      ['POTBUNGA POTBUNGA POT sf sfsf fssf s', 940000, 800000],
-      ['KARPET KULIT HARYMAU sf ssff  sfff', 99880000, 89990000]
-    ];
-    _navbarIcons = [
-      Icons.home,
-      Icons.favorite_border,
-      Icons.list_alt_outlined,
-      Icons.account_box_rounded
-    ];
+    _user = FirebaseAuth.instance.currentUser;
+
     _menuAppIcons = [
       Icons.bed,
       Icons.chair,
@@ -47,30 +122,34 @@ class _HomeScreenState extends State<HomeScreen> {
       Icons.king_bed_rounded,
       Icons.kitchen
     ];
+    Future.delayed(Duration.zero, () async {
+      _userData = await Firestore.getData('users', (_user?.uid).toString());
+      _tokoData = await Firestore.getData('database', 'toko');
+      _productData = await Firestore.getData('database', 'products');
+      setState(() {
+        _produkCustomDashboard = _productData!['data'];
+        _produkCustomDashboard!.shuffle();
+        _produkCustomDashboard!.shuffle();
+        _produkCustomDashboard!.shuffle();
+        _showData = true;
+      });
+    });
   }
 
   @override
   void dispose() {
-    data = [];
-    _menuAppIcons = [];
     super.dispose();
+    _menuAppIcons = [];
+    _user = null;
+    if (_userData != null) _userData!.clear();
+    if (_tokoData != null) _tokoData!.clear();
+    if (_productData != null) _productData!.clear();
+    if (_produkCustomDashboard != null) _produkCustomDashboard!.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size sizescreen = MediaQuery.of(context).size;
-    List<Widget> navbar(barLength, currentIndex) {
-      return List<Widget>.generate(barLength, (index) {
-        return SizedBox(
-            width: sizescreen.width / 4,
-            height: double.infinity,
-            child: Center(
-                child: Icon(_navbarIcons![index],
-                    color: currentIndex == index
-                        ? Colors.pinkAccent
-                        : Colors.brown[300])));
-      });
-    }
+    Size screen = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.brown[200],
@@ -91,26 +170,34 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
-                        child: Container(
-                          height: 30,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                  color: Colors.grey.shade300,
-                                  width: 1.2,
-                                  style: BorderStyle.solid)),
-                          child: Row(
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
-                                child: Icon(Icons.search,
-                                    size: 20, color: Colors.pinkAccent),
-                              ),
-                              Text('Cari furniture impian anda disini',
-                                  style: TextStyle(
-                                      fontSize: 11, color: Colors.black45))
-                            ],
+                        child: GestureDetector(
+                          onTap: () =>
+                              Navigator.pushNamed(context, "/pencarian"),
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                    color: Colors.grey.shade300,
+                                    width: 1.2,
+                                    style: BorderStyle.solid)),
+                            child: Row(
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 5),
+                                  child: Icon(Icons.search,
+                                      size: 20, color: Colors.pinkAccent),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                      'Cari furniture impian anda disini',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 11, color: Colors.black45)),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -119,10 +206,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 120,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Icon(color: Colors.white, Icons.shopping_cart),
-                            Icon(color: Colors.white, Icons.mail_outline),
-                            Icon(color: Colors.white, Icons.notifications),
+                          children: [
+                            GestureDetector(
+                                onTap: () => Navigator.pushReplacementNamed(
+                                    context, '/keranjang'),
+                                child: Icon(
+                                    color: Color(0xFFFFFFFF),
+                                    Icons.shopping_cart)),
+                            GestureDetector(
+                                onTap: () => _snackBarCustom(
+                                    message: 'Fitur dalam pengembangan :)',
+                                    color: Colors.orange),
+                                child: Icon(
+                                    color: Color(0xFFFFFFFF),
+                                    Icons.mail_outline)),
+                            GestureDetector(
+                                onTap: () => _snackBarCustom(
+                                    message: 'Fitur dalam pengembangan :)',
+                                    color: Colors.orange),
+                                child: Icon(
+                                    color: Color(0xFFFFFFFF),
+                                    Icons.notifications)),
                           ],
                         ),
                       )
@@ -154,21 +258,49 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Text('Saldo',
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text('Saldo',
                                         style: TextStyle(
                                             fontSize: 9,
                                             fontWeight: FontWeight.bold)),
-                                    Text('Rp 25.840.000',
-                                        style: TextStyle(fontSize: 12))
+                                    _showData == false
+                                        ? Flexible(
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Colors.grey.shade300,
+                                                        Colors.grey.shade200
+                                                      ],
+                                                      stops: const [
+                                                        0.1,
+                                                        0.9,
+                                                      ],
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5)),
+                                                width: screen.width * .29,
+                                                height: 12))
+                                        : Text(
+                                            idrFormat
+                                                .format(_userData!['saldo']),
+                                            style:
+                                                const TextStyle(fontSize: 12))
                                   ],
                                 ),
-                                const Icon(
-                                  Icons.discount,
-                                  color: Colors.pinkAccent,
-                                  size: 24,
-                                  semanticLabel: 'VOUCHER',
+                                GestureDetector(
+                                  onTap: () => _snackBarCustom(
+                                      message: 'Fitur dalam pengembangan :)',
+                                      color: Colors.orange),
+                                  child: const Icon(
+                                    Icons.discount,
+                                    color: Colors.pinkAccent,
+                                    size: 24,
+                                    semanticLabel: 'VOUCHER',
+                                  ),
                                 )
                               ],
                             ),
@@ -178,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Container(
                   height: 80,
-                  width: sizescreen.width,
+                  width: screen.width,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border(
@@ -205,8 +337,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Container(
                   color: Colors.grey[100],
-                  height: 340,
-                  width: sizescreen.width,
+                  height: 360,
+                  width: screen.width,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -216,142 +348,177 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
-                      Flexible(
-                        child: ListView.builder(
-                          shrinkWrap: false,
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.all(14),
-                          itemCount: data?.length,
-                          itemBuilder: (context, index) {
-                            return Card(
-                              elevation: 3,
-                              margin: const EdgeInsets.only(right: 14),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: SizedBox(
-                                width: 150,
-                                child: Column(
-                                  children: [
-                                    ClipRRect(
+                      _showData == false
+                          ? Container(
+                              height: 300,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                  color: Colors.pinkAccent))
+                          : Flexible(
+                              child: ListView.builder(
+                                primary: false,
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: false,
+                                scrollDirection: Axis.horizontal,
+                                padding: const EdgeInsets.all(14),
+                                itemCount: 6,
+                                itemBuilder: (context, index) {
+                                  return Card(
+                                    elevation: 3,
+                                    margin: const EdgeInsets.only(right: 14),
+                                    shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            const BorderRadius.vertical(
-                                                top: Radius.circular(15)),
-                                        child: Container(
-                                            height: 180,
-                                            color: Colors.pinkAccent,
-                                            child: Center(
-                                                child: Text(
-                                                    "Gambar ke-${index + 1}")))),
-                                    Flexible(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 14, vertical: 10),
+                                            BorderRadius.circular(15)),
+                                    child: GestureDetector(
+                                      onTap: () => _snackBarCustom(
+                                          message:
+                                              'Fitur Harga Flashsale dalam pengembangan',
+                                          color: Colors.orange),
+                                      //Navigator.pushNamed(context, "/produk"),
+                                      child: SizedBox(
+                                        width: 150,
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(data?[index][0],
-                                                maxLines: 2,
-                                                softWrap: true,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                            Text(
-                                                idrFormat
-                                                    .format(data?[index][2]),
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            Text(
-                                                idrFormat
-                                                    .format(data?[index][1]),
-                                                style: const TextStyle(
-                                                    color: Colors.pinkAccent,
-                                                    fontWeight: FontWeight.w500,
-                                                    decoration: TextDecoration
-                                                        .lineThrough)),
+                                            ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                        .vertical(
+                                                    top: Radius.circular(15)),
+                                                child: Container(
+                                                    height: 180,
+                                                    width: 150,
+                                                    color: Colors.white,
+                                                    child: FadeInImage(
+                                                        image: NetworkImage(
+                                                            _produkCustomDashboard![
+                                                                    index]
+                                                                ['gambar'][0]),
+                                                        fit: BoxFit.fitHeight,
+                                                        placeholder:
+                                                            const AssetImage(
+                                                                "assets/loading_animate_eclipse.gif"),
+                                                        placeholderFit:
+                                                            BoxFit.fitWidth,
+                                                        imageErrorBuilder:
+                                                            (context, exception,
+                                                                stackTrace) {
+                                                          return const Text(
+                                                              "Cannot load image");
+                                                        }))),
+                                            Flexible(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 14,
+                                                        vertical: 10),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                        _produkCustomDashboard![
+                                                            index]['nama'],
+                                                        maxLines: 2,
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500)),
+                                                    Text(
+                                                        idrFormat.format(
+                                                            _randomDiscountSimulation(
+                                                                _produkCustomDashboard![
+                                                                        index]
+                                                                    ['harga'])),
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    Text(
+                                                        idrFormat.format(
+                                                            _produkCustomDashboard![
+                                                                    index]
+                                                                ['harga']),
+                                                        style: const TextStyle(
+                                                            color: Colors
+                                                                .pinkAccent,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough)),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
-                                    )
-                                  ],
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                      )
+                            )
                     ],
                   ),
                 ),
                 Container(
-                  color: Colors.grey[100],
-                  height: 240,
-                  width: sizescreen.width,
+                  color: Colors.brown[100],
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  width: screen.width,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(14, 12, 0, 5),
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 14),
                         child: Text('Rekomendasi',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.grey[100],
-                  height: 236,
-                  width: sizescreen.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(14, 14, 0, 5),
-                        child: Text('Submenu 3',
+                      _showData == true
+                          ? _customCardProduct(_produkCustomDashboard![10])
+                          : Container(
+                              height: 320,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                  color: Colors.pinkAccent)),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        child: Text('Terlaris',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.grey[100],
-                  height: 236,
-                  width: sizescreen.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(14, 14, 0, 5),
-                        child: Text('Submenu 4',
+                      _showData == true
+                          ? _customCardProduct(_produkCustomDashboard![20])
+                          : Container(
+                              height: 320,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                  color: Colors.pinkAccent)),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        child: Text('Mungkin kamu juga suka',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
+                      _showData == true
+                          ? _customCardProduct(_produkCustomDashboard![30])
+                          : Container(
+                              height: 320,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(
+                                  color: Colors.pinkAccent)),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            height: 50,
-            width: sizescreen.width,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                    top: BorderSide(
-                        color: Colors.grey.shade500,
-                        width: 1,
-                        style: BorderStyle.solid))),
-            child: Row(
-              children: navbar(_navbarIcons!.length, 0),
-            ),
-          )
+          navbarCustomContainer(context, 0)
         ],
       ),
     );

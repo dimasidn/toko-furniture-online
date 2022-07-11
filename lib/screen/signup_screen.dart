@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../conf/auth.dart';
+
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
 
@@ -10,17 +12,16 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  final _ctrE = TextEditingController(),
-      _ctrU = TextEditingController(),
-      _ctrP = TextEditingController();
-  bool hidePassword = true, _ctrEValidate = false;
-
+  final _emailCtr = TextEditingController(),
+      _nameCtr = TextEditingController(),
+      _pwdCtr = TextEditingController();
+  bool hidePassword = true, _ctrEValidate = false, _isClicked = false;
   Timer? _eTimer;
 
   void _eTimerFunction() {
     _eTimer = Timer(const Duration(seconds: 1), () {
       setState(() {
-        if (_ctrE.text.contains(RegExp(
+        if (_emailCtr.text.contains(RegExp(
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'))) {
           setState(() {
             _ctrEValidate = false;
@@ -34,6 +35,14 @@ class _SignupScreenState extends State<SignupScreen> {
     });
   }
 
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: const Text('Fitur dalam pengembangan'),
+    ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,10 +50,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    _ctrE.dispose();
-    _ctrP.dispose();
-    _ctrU.dispose();
-    _eTimer!.cancel();
+    _emailCtr.dispose();
+    _nameCtr.dispose();
+    _pwdCtr.dispose();
     super.dispose();
   }
 
@@ -56,7 +64,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,13 +72,25 @@ class _SignupScreenState extends State<SignupScreen> {
               SizedBox(
                 height: MediaQuery.of(context).viewPadding.top,
               ),
-              Image.asset(
-                'assets/vector_1.jpg',
-                height: 250,
-                width: 250,
-              ),
+              Image.asset('assets/vector_1.jpg', height: 250, width: 250),
               TextFormField(
-                controller: _ctrE,
+                controller: _nameCtr,
+                style: const TextStyle(color: Colors.pinkAccent),
+                decoration: InputDecoration(
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Icon(Icons.person, color: Colors.brown[300]),
+                    ),
+                    filled: true,
+                    fillColor: Colors.brown[50],
+                    hintText: 'Name',
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(50))),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _emailCtr,
                 style: const TextStyle(color: Colors.pinkAccent),
                 onChanged: (value) {
                   _eTimer != null ? _eTimer!.cancel() : null;
@@ -97,26 +117,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         borderRadius: BorderRadius.circular(50))),
               ),
               const SizedBox(height: 20),
-              TextFormField(
-                controller: _ctrU,
-                style: const TextStyle(color: Colors.pinkAccent),
-                decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Icon(Icons.person, color: Colors.brown[300]),
-                    ),
-                    filled: true,
-                    fillColor: Colors.brown[50],
-                    hintText: 'Username',
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(50))),
-              ),
-              const SizedBox(height: 20),
               Column(
                 children: [
                   TextFormField(
-                    controller: _ctrP,
+                    controller: _pwdCtr,
                     obscureText: hidePassword,
                     decoration: InputDecoration(
                         prefixIcon: Padding(
@@ -144,7 +148,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       animationDuration: const Duration(milliseconds: 500),
@@ -153,14 +157,45 @@ class _SignupScreenState extends State<SignupScreen> {
                       minimumSize: const Size(120, 50),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25))),
-                  onPressed: () {
+                  onPressed: () async {
                     FocusManager.instance.primaryFocus?.unfocus();
+                    if (_emailCtr.text == "" ||
+                        _pwdCtr.text == "" ||
+                        _nameCtr.text == "") {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: Colors.red,
+                          content: const Text("Fill the form first!")));
+                      return;
+                    }
+                    setState(() {
+                      _isClicked = true;
+                    });
+                    var log = await Auth.register(
+                        _emailCtr.text, _pwdCtr.text, _nameCtr.text);
+                    setState(() {
+                      _isClicked = false;
+                    });
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        backgroundColor:
+                            log == null ? Colors.green : Colors.red,
+                        content: Text(log ?? "Registered!")));
+                    if (log == null) {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    } else {
+                      print(log);
+                    }
                   },
-                  child: const Text(
-                    'SIGNUP',
-                    style: TextStyle(fontSize: 18),
-                  )),
-              const SizedBox(height: 50),
+                  child: _isClicked == false
+                      ? const Text('SIGN UP')
+                      : const CircularProgressIndicator(color: Colors.white)),
+              const SizedBox(height: 40),
               Column(
                 children: [
                   Row(
@@ -168,7 +203,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       const Text("Already have an Account ?"),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
                           child: const Text(
                             'Sign In',
                             style: TextStyle(
@@ -187,7 +224,8 @@ class _SignupScreenState extends State<SignupScreen> {
                               color: Colors.brown[300],
                               indent: 20,
                               endIndent: 8)),
-                      Text('OR', style: TextStyle(color: Colors.brown[300])),
+                      Text('or sign up using',
+                          style: TextStyle(color: Colors.brown[300])),
                       Flexible(
                           child: Divider(
                               thickness: 1,
@@ -201,19 +239,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       IconButton(
                           splashRadius: 1,
-                          onPressed: () {},
+                          onPressed: () => _snackBarCustom(),
                           icon: Image.asset('assets/imageicon_fb.png'),
                           iconSize: 40),
                       IconButton(
                           splashRadius: 1,
-                          onPressed: () {},
+                          onPressed: () => _snackBarCustom(),
                           icon: Image.asset('assets/imageicon_tw.png'),
                           iconSize: 40,
                           padding: const EdgeInsets.symmetric(
                               vertical: 15, horizontal: 30)),
                       IconButton(
                           splashRadius: 1,
-                          onPressed: () {},
+                          onPressed: () => _snackBarCustom(),
                           icon: Image.asset('assets/imageicon_gp.png'),
                           iconSize: 40),
                     ],

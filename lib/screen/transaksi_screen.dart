@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../conf/navigatebar.dart';
 
 class TransaksiScreen extends StatefulWidget {
   const TransaksiScreen({Key? key}) : super(key: key);
@@ -16,6 +15,15 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
   List? data, data1;
   late PageController _pageController;
   int activePage = 0;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
+      {required String message, required Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: Text(message),
+    ));
+  }
 
   void indicatorTap(toPage) {
     setState(() {
@@ -52,6 +60,7 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Column(
@@ -65,9 +74,9 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
               children: [
                 SizedBox(height: MediaQuery.of(context).viewPadding.top),
                 Row(
-                  children: const [
-                    SizedBox(width: 40),
-                    Flexible(
+                  children: [
+                    const SizedBox(width: 40),
+                    const Flexible(
                       child: Center(
                         child: Text(
                           'Transaksi Belanja',
@@ -78,12 +87,17 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () => _snackBarCustom(
+                          message: 'Fitur dalam pengembangan :)',
+                          color: Colors.orange),
+                      child: const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
                       ),
                     )
                   ],
@@ -96,45 +110,59 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
             width: screen.width,
             child: Row(
               children: [
-                Container(
-                  width: screen.width / 2,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: activePage == 0 ? null : Colors.grey[300],
-                      border: Border(
-                          right: BorderSide(
-                              width: 1, color: Colors.brown.shade400),
-                          left: BorderSide(
-                              width: 1, color: Colors.brown.shade400))),
-                  child: Text('Proses',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: activePage == 0
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: activePage == 0
-                              ? Colors.pinkAccent
-                              : Colors.brown[400])),
+                GestureDetector(
+                  onTap: () => setState(() {
+                    if (activePage == 1) {
+                      _pageController.jumpToPage(0);
+                    }
+                  }),
+                  child: Container(
+                    width: screen.width / 2,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: activePage == 0 ? null : Colors.grey[300],
+                        border: Border(
+                            right: BorderSide(
+                                width: 1, color: Colors.brown.shade400),
+                            left: BorderSide(
+                                width: 1, color: Colors.brown.shade400))),
+                    child: Text('Proses',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: activePage == 0
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: activePage == 0
+                                ? Colors.pinkAccent
+                                : Colors.brown[400])),
+                  ),
                 ),
-                Container(
-                  width: screen.width / 2,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: activePage == 0 ? Colors.grey[300] : null,
-                      border: Border(
-                          right: BorderSide(
-                              width: 1, color: Colors.brown.shade400),
-                          left: BorderSide(
-                              width: 1, color: Colors.brown.shade400))),
-                  child: Text('Riwayat',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: activePage == 0
-                              ? FontWeight.normal
-                              : FontWeight.bold,
-                          color: activePage == 0
-                              ? Colors.brown[400]
-                              : Colors.pinkAccent)),
+                GestureDetector(
+                  onTap: () => setState(() {
+                    if (activePage == 0) {
+                      _pageController.jumpToPage(1);
+                    }
+                  }),
+                  child: Container(
+                    width: screen.width / 2,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: activePage == 0 ? Colors.grey[300] : null,
+                        border: Border(
+                            right: BorderSide(
+                                width: 1, color: Colors.brown.shade400),
+                            left: BorderSide(
+                                width: 1, color: Colors.brown.shade400))),
+                    child: Text('Riwayat',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: activePage == 0
+                                ? FontWeight.normal
+                                : FontWeight.bold,
+                            color: activePage == 0
+                                ? Colors.brown[400]
+                                : Colors.pinkAccent)),
+                  ),
                 ),
               ],
             ),
@@ -284,7 +312,8 @@ class _TransaksiScreenState extends State<TransaksiScreen> {
                 )
               ],
             ),
-          )
+          ),
+          navbarCustomContainer(context, 2)
         ],
       ),
     );

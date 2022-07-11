@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../conf/navigatebar.dart';
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({Key? key}) : super(key: key);
@@ -12,9 +13,19 @@ class _WishlistScreenState extends State<WishlistScreen> {
   final idrFormat =
       NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
   List? data;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
+      {required String message, required Color? color}) {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: color,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: Text(message),
+    ));
+  }
 
   @override
   void initState() {
+    super.initState();
     data = [
       ['Meja makan limited edition sdsd wwwdsds fsdfdsd', 'Surabaya', 8454211],
       ['Kursi makan kayu jati', 'Semarang', 5784448],
@@ -25,7 +36,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
       ['ProdukProduk_produk jkl zz', 'Boyolali', 2651646],
       ['ProdukProduk_produk opq zz', 'Klaten', 2651646],
     ];
-    super.initState();
   }
 
   @override
@@ -36,6 +46,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Column(children: [
@@ -48,9 +59,9 @@ class _WishlistScreenState extends State<WishlistScreen> {
             children: [
               SizedBox(height: MediaQuery.of(context).viewPadding.top),
               Row(
-                children: const [
-                  SizedBox(width: 40),
-                  Flexible(
+                children: [
+                  const SizedBox(width: 40),
+                  const Flexible(
                     child: Center(
                       child: Text(
                         'Keinginan',
@@ -61,12 +72,17 @@ class _WishlistScreenState extends State<WishlistScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Icon(
-                      Icons.share,
-                      color: Colors.white,
+                  GestureDetector(
+                    onTap: () => _snackBarCustom(
+                        message: 'Fitur dalam pengembangan :)',
+                        color: Colors.orange),
+                    child: const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Icon(
+                        Icons.share,
+                        color: Colors.white,
+                      ),
                     ),
                   )
                 ],
@@ -125,6 +141,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
                 );
               }),
         ),
+        navbarCustomContainer(context, 1)
       ]),
     );
   }

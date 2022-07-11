@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../conf/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,191 +9,182 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
+  bool _isClicked = false;
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom() {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      content: const Text('Fitur dalam pengembangan'),
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image.asset('images/hello1.gif'),
-            Text(
-              'Selamat Datang ',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-            ),
-            Text(
-              'Di Toko Furniture Kami',
-              style: TextStyle(fontSize: 40),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-              child: TextFormField(
-                controller: userNameController,
-                decoration: InputDecoration(
-                  label: Text('Username'),
-                  hintText: 'Masukkan username',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
+      body: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).viewPadding.top,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-              child: TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  label: Text('Password'),
-                  hintText: 'Masukkan password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Fitur dalam pengembangan')));
-                      },
-                      child: Text('     Forgot Password?'))
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 200,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  print('username = ${userNameController.text} ');
-                  if (userNameController.text == 'user_uts' &&
-                      passwordController.text == 'pass_uts') {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('anda berhasil login'),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('username atau password salah'),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                child: Text('Login'),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Or connect using'),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Fitur dalam pengembangan')));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue[400],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            'images/fb.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                          Text('Facebook')
-                        ],
-                      ),
+              Image.asset('assets/vector_2.jpg', height: 250, width: 250),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                            width: 1.7,
+                            style: BorderStyle.solid,
+                            color: Colors.pinkAccent)),
+                    label: const Text('Email'),
+                    hintText: 'Masukkan email',
+                    prefixIcon: const Icon(Icons.alternate_email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Fitur dalam pengembangan')));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.blue[400],
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            'images/googlepng.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                          Text('Google')
-                        ],
-                      ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                child: TextFormField(
+                  controller: _pwdController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: const BorderSide(
+                            width: 1.7,
+                            style: BorderStyle.solid,
+                            color: Colors.pinkAccent)),
+                    label: const Text('Password'),
+                    hintText: 'Masukkan password',
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-            Container(
-              child: Row(
+              const SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
+                  TextButton(
+                      onPressed: () => _snackBarCustom(),
+                      child: Text('Forgot Password?',
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.brown[300])))
+                ],
+              ),
+              SizedBox(
+                width: 150,
+                height: 50,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        animationDuration: const Duration(milliseconds: 500),
+                        splashFactory: InkSparkle.splashFactory,
+                        primary: Colors.pinkAccent,
+                        minimumSize: const Size(120, 50),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25))),
+                    onPressed: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      if (_emailController.text == "" ||
+                          _pwdController.text == "") {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            backgroundColor: Colors.red,
+                            content: const Text("Fill the form first!")));
+                        return;
+                      }
+                      setState(() {
+                        _isClicked = true;
+                      });
+                      var log = await Auth.signin(
+                          _emailController.text, _pwdController.text);
+                      setState(() {
+                        _isClicked = false;
+                      });
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          backgroundColor:
+                              log == null ? Colors.green : Colors.red,
+                          content: Text(log ?? "Logged in!")));
+                      if (log == null) {
+                        Navigator.pushReplacementNamed(context, "/dashboard");
+                      } else {
+                        print(log);
+                      }
+                    },
+                    child: _isClicked == false
+                        ? const Text('LOGIN')
+                        : const CircularProgressIndicator(color: Colors.white)),
+              ),
+              const SizedBox(height: 20),
+              const Text('Or connect using'),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                      splashRadius: 1,
+                      onPressed: () => _snackBarCustom(),
+                      icon: Image.asset('assets/imageicon_fb.png'),
+                      iconSize: 40),
+                  IconButton(
+                      splashRadius: 1,
+                      onPressed: () => _snackBarCustom(),
+                      icon: Image.asset('assets/imageicon_tw.png'),
+                      iconSize: 40,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 30)),
+                  IconButton(
+                      splashRadius: 1,
+                      onPressed: () => _snackBarCustom(),
+                      icon: Image.asset('assets/imageicon_gp.png'),
+                      iconSize: 40),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const Text(
                     'Dont have an Account ? ',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  FlatButton(
-                    textColor: Colors.blueAccent,
-                    child: Text(
+                  TextButton(
+                    child: const Text(
                       'Sign Up',
-                      style: TextStyle(fontSize: 12),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pinkAccent),
                     ),
-                    onPressed: () {},
+                    onPressed: () => Navigator.pushNamed(context, "/signup"),
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
