@@ -11,10 +11,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
-  bool _isClicked = false;
+  bool _isClicked = false, hidePassword = true;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom() {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: const Text('Fitur dalam pengembangan'),
     ));
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
                 child: TextFormField(
                   controller: _pwdController,
-                  obscureText: true,
+                  obscureText: hidePassword,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -70,6 +71,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     label: const Text('Password'),
                     hintText: 'Masukkan password',
                     prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      splashRadius: 1,
+                      icon: hidePassword
+                          ? Icon(Icons.visibility_off, color: Colors.brown[300])
+                          : const Icon(Icons.visibility,
+                              color: Colors.pinkAccent),
+                      onPressed: () =>
+                          setState(() => hidePassword = !hidePassword),
+                      padding: const EdgeInsets.all(18),
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
@@ -105,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_emailController.text == "" ||
                           _pwdController.text == "") {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            duration: const Duration(seconds: 1),
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
@@ -122,6 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       });
                       if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),

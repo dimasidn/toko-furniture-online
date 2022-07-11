@@ -20,6 +20,7 @@ class _WishlistScreenState extends State<WishlistScreen> {
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
       {required String message, required Color? color}) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,
       backgroundColor: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

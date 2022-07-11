@@ -37,6 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom() {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: const Text('Fitur dalam pengembangan'),
@@ -163,6 +164,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         _pwdCtr.text == "" ||
                         _nameCtr.text == "") {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
@@ -180,6 +182,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     });
                     if (!mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        duration: const Duration(seconds: 1),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
@@ -187,7 +190,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             log == null ? Colors.green : Colors.red,
                         content: Text(log ?? "Registered!")));
                     if (log == null) {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/login', (_) => false);
                     } else {
                       print(log);
                     }

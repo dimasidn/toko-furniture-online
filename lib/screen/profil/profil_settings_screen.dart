@@ -1,6 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../../conf/auth.dart';
 
 class ProfilSettingsScreen extends StatefulWidget {
@@ -11,7 +9,6 @@ class ProfilSettingsScreen extends StatefulWidget {
 }
 
 class _ProfilSettingsScreenState extends State<ProfilSettingsScreen> {
-  User? _user;
   bool _isClicked = false;
 
   @override
@@ -33,7 +30,15 @@ class _ProfilSettingsScreenState extends State<ProfilSettingsScreen> {
         child: Column(
           children: [
             ListTile(
-                title: Text('Ubah Email',
+                onTap: () =>
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      duration: const Duration(seconds: 1),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      content: const Text('Fitur dalam pengembangan :)'),
+                    )),
+                title: const Text('Ubah Email',
                     style: TextStyle(fontSize: 16, color: Colors.black))),
             Divider(height: 10, color: Colors.brown[400], thickness: 1),
             ListTile(
@@ -47,18 +52,19 @@ class _ProfilSettingsScreenState extends State<ProfilSettingsScreen> {
                   });
                   if (!mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      duration: const Duration(seconds: 1),
                       backgroundColor: log == null ? Colors.green : Colors.red,
                       content: Text(log ?? "Logged out!")));
                   if (log == null) {
-                    _user = null;
-                    Navigator.pushReplacementNamed(context, '/login');
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/login', (_) => false);
                   } else {
                     print(log);
                   }
                 },
                 title: _isClicked == true
                     ? const CircularProgressIndicator()
-                    : Text('Log Out',
+                    : const Text('Log Out',
                         style: TextStyle(fontSize: 16, color: Colors.black))),
           ],
         ),

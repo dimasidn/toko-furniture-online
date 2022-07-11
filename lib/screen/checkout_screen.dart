@@ -23,6 +23,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
       {required String message, required Color? color}) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      duration: const Duration(seconds: 1),
       behavior: SnackBarBehavior.floating,
       backgroundColor: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -337,8 +338,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       ],
                     )),
                 GestureDetector(
-                  onTap: () =>
-                      Navigator.pushReplacementNamed(context, "/transaksi"),
+                  onTap: () => Navigator.pushNamedAndRemoveUntil(
+                      context, '/transaksi', (_) => false),
                   child: Container(
                     color: Colors.brown[300],
                     height: 50,
