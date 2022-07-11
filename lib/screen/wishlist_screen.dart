@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../conf/navigatebar.dart';
 
@@ -12,7 +15,8 @@ class WishlistScreen extends StatefulWidget {
 class _WishlistScreenState extends State<WishlistScreen> {
   final idrFormat =
       NumberFormat.currency(locale: 'id_ID', name: "Rp ", decimalDigits: 0);
-  List? data;
+  List? _jsonData, _jsonToko;
+  bool _showData = false;
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> _snackBarCustom(
       {required String message, required Color? color}) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -26,21 +30,28 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   void initState() {
     super.initState();
-    data = [
-      ['Meja makan limited edition sdsd wwwdsds fsdfdsd', 'Surabaya', 8454211],
-      ['Kursi makan kayu jati', 'Semarang', 5784448],
-      ['Lemari pakaian Ukir asli jogja', 'Yogyakarta', 4544444],
-      ['Rak sepatu asli original', 'Kudus', 2254587],
-      ['ProdukProduk_produk xyz zz', 'Gresik', 2651646],
-      ['ProdukProduk_produk klm zz', 'Karanganyar', 2651646],
-      ['ProdukProduk_produk jkl zz', 'Boyolali', 2651646],
-      ['ProdukProduk_produk opq zz', 'Klaten', 2651646],
-    ];
+    Future.delayed(Duration.zero, () async {
+      final String respone1 = await rootBundle.loadString('assets/dummy.json');
+      final data1 = await jsonDecode(respone1);
+      _jsonData = data1;
+      final String respone2 =
+          await rootBundle.loadString('assets/dummy_toko.json');
+      final data2 = await jsonDecode(respone2);
+      _jsonToko = data2;
+      setState(() {
+        _jsonData!.shuffle();
+        _jsonData!.shuffle();
+        _jsonData!.shuffle();
+        _showData = true;
+      });
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+    if (_jsonData != null) _jsonData!.clear();
+    if (_jsonToko != null) _jsonToko!.clear();
   }
 
   @override
@@ -91,55 +102,77 @@ class _WishlistScreenState extends State<WishlistScreen> {
           ),
         ),
         Flexible(
-          child: GridView.builder(
-              shrinkWrap: false,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(14),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 14,
-                  mainAxisSpacing: 18,
-                  mainAxisExtent: 300),
-              itemCount: data?.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(15)),
-                          child: Container(
-                              height: 180,
-                              color: Colors.pinkAccent,
-                              child: Center(
-                                  child: Text("Gambar ke-${index + 1}")))),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                data?[index][0],
-                                maxLines: 2,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
+          child: _showData == false
+              ? const Center(child: CircularProgressIndicator())
+              : GridView.builder(
+                  shrinkWrap: false,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(14),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 18,
+                      mainAxisExtent: 300),
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      child: GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, "/produk",
+                            arguments: {"produk": _jsonData![index]}),
+                        child: Column(
+                          children: [
+                            ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(15)),
+                                child: Container(
+                                    height: 180,
+                                    color: Colors.pinkAccent,
+                                    child: FadeInImage(
+                                        image: NetworkImage(
+                                            _jsonData![index]['gambar'][0]),
+                                        fit: BoxFit.fitHeight,
+                                        placeholder: const AssetImage(
+                                            "assets/loading_animate_standart.gif"),
+                                        placeholderFit: BoxFit.fitWidth,
+                                        imageErrorBuilder:
+                                            (context, exception, stackTrace) {
+                                          return const Text(
+                                              "Cannot load image");
+                                        }))),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      _jsonData![index]['nama'],
+                                      maxLines: 2,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(idrFormat
+                                        .format(_jsonData![index]['harga'])),
+                                    Text(_jsonToko![
+                                            _jsonData![index]['id_toko'] - 1]
+                                        ['alamat']),
+                                  ],
+                                ),
                               ),
-                              Text(idrFormat.format(data?[index][2])),
-                              Text(data?[index][1]),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                );
-              }),
+                      ),
+                    );
+                  }),
         ),
         navbarCustomContainer(context, 1)
       ]),

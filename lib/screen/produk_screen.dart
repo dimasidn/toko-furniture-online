@@ -441,8 +441,18 @@ class _ProdukScreenState extends State<ProdukScreen>
                     children: [
                       Flexible(
                         child: GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, "/checkout"),
+                          onTap: () => Navigator.pushNamed(context, "/checkout",
+                              arguments: {
+                                "produk": [
+                                  {
+                                    "nama": args['nama'],
+                                    "harga": args['harga'],
+                                    "jumlah": 1,
+                                    "gambar": argsGambar[0]
+                                  }
+                                ],
+                                "total": args['harga']
+                              }),
                           child: Container(
                             alignment: Alignment.center,
                             height: 50,

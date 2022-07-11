@@ -1,0 +1,86 @@
+[
+    {
+        "id_toko": 1,
+        "nama": "Mebel Cendana",
+        "alamat": "Solo",
+        "gambar": "https://i.postimg.cc/Rhqk3xTd/profil-1.png"
+    },
+    {
+        "id_toko": 2,
+        "nama": "Sragen Mebel Surya",
+        "alamat": "Sragen",
+        "gambar": "https://i.postimg.cc/WzKQgYWv/profil-2.png"
+    },
+    {
+        "id_toko": 3,
+        "nama": "Atlas Furniture",
+        "alamat": "Cirebon",
+        "gambar": "https://i.postimg.cc/1Rjxk49j/profil-3.png"
+    },
+    {
+        "id_toko": 4,
+        "nama": "Pusara Pasuruan",
+        "alamat": "Pasuruan",
+        "gambar": "https://i.postimg.cc/hj4WBdzH/profil-4.png"
+    },
+    {
+        "id_toko": 5,
+        "nama": "House Love Rain",
+        "alamat": "Bogor",
+        "gambar": "https://i.postimg.cc/FRPtsH01/profil-5.png"
+    },
+    {
+        "id_toko": 6,
+        "nama": "JKT Furniture",
+        "alamat": "Jakarta",
+        "gambar": "https://i.postimg.cc/MKfkqxHK/profil-6.png"
+    },
+    {
+        "id_toko": 7,
+        "nama": "Gending Puspita Furniture",
+        "alamat": "Jepara",
+        "gambar": "https://i.postimg.cc/nLJf35HV/profil-7.png"
+    },
+    {
+        "id_toko": 8,
+        "nama": "Kali Banyu Urip",
+        "alamat": "Demak",
+        "gambar": "https://i.postimg.cc/QMJGwbtQ/profil-8.png"
+    },
+    {
+        "id_toko": 9,
+        "nama": "Ambarawa Center",
+        "alamat": "Semarang",
+        "gambar": "https://i.postimg.cc/hGr6ptyM/profil-9.png"
+    },
+    {
+        "id_toko": 10,
+        "nama": "Sugeng Omah",
+        "alamat": "Kediri",
+        "gambar": "https://i.postimg.cc/QCBz8kXn/profil-10.png"
+    },
+    {
+        "id_toko": 11,
+        "nama": "Bandung For House",
+        "alamat": "Bandung",
+        "gambar": "https://i.postimg.cc/cJHcYRjx/profil-11.png"
+    },
+    {
+        "id_toko": 12,
+        "nama": "Furniture Rancak",
+        "alamat": "Bali",
+        "gambar": "https://i.postimg.cc/Gt0PZZpt/profil-12.png"
+    },
+    {
+        "id_toko": 13,
+        "nama": "Andi House Props",
+        "alamat": "Surabaya",
+        "gambar": "https://i.postimg.cc/13MHfCv7/profil-13.png"
+    },
+    {
+        "id_toko": 14,
+        "nama": "Sapta Raja",
+        "alamat": "Yogyakarta",
+        "gambar": "https://i.postimg.cc/qR6XDk4W/profil-14.png"
+    }
+]

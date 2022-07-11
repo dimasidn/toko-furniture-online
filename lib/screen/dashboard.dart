@@ -208,8 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
-                                onTap: () => Navigator.pushReplacementNamed(
-                                    context, '/keranjang'),
+                                onTap: () =>
+                                    Navigator.pushNamed(context, '/keranjang'),
                                 child: Icon(
                                     color: Color(0xFFFFFFFF),
                                     Icons.shopping_cart)),
